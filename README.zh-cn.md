@@ -1,24 +1,22 @@
 # db-cache
-A PHP library to cache database query, supports MySQL/Mongo and Memcached/Redis...
+一个用于缓存数据库查询的PHP库，支持MySQL/Mongo等数据库，同时支持Memcached/Redis等缓存
 
-##### [中文版](https://github.com/flashytime/db-cache/blob/master/README.zh-cn.md)
+### 特点
+- 支持常用数据库，如MySQL、Mongo
+- 支持常用缓存，如Memcached、Redis
+- 支持数据库主从和读写分离
+- 支持MySQL数据库分表
+- 通过version策略来管理缓存，控制缓存的建立和失效
 
-### Features
-- Supports common databases, such as MySQL、Mongo
-- Supports common cache servers, such as Memcached、Redis
-- Supports database master-slave and reading/writing separation
-- Supports MySQL database table sharding
-- Manage cache through a `version` strategy, which controls the creation and expiration of the cache
-
-### Installation
-- Run the command below in your project root directory
+### 安装
+- 在项目根目录运行composer require命令
 
 ```bash
 composer require flashytime/db-cache
 ```
-- Copy `config/db-cache.php` to your project config directory
+- 把`config/db-cache.php`拷贝到项目的配置目录
 
-### Usage
+### 使用
 
 ```php
 class TestModel
@@ -65,5 +63,5 @@ class TestModel
 }
 ```
 
-### License
+### 证书
 MIT
