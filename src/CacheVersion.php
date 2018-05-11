@@ -65,7 +65,7 @@ class CacheVersion
      */
     public function setVersion($versionKey)
     {
-        return $this->getCache()->set($versionKey, time());
+        return $this->getCache()->set($versionKey, $this->getMicroTime());
     }
 
     /**
@@ -149,7 +149,7 @@ class CacheVersion
         $versionKey = $this->getVersionKey($module, $type);
         $version = $this->getVersion($versionKey);
 
-        return $versionKey . '_' . $version . '_' . md5(serialize($args));
+        return $versionKey . '_' . $version . '_' . md5(json_encode($args));
     }
 
     /**
@@ -160,6 +160,17 @@ class CacheVersion
     private function getVersionKey($module, $type)
     {
         return self::CACHE_GLOBAL_VERSION . '_' . $module . '_' . $type . '_version';
+    }
+
+    /**
+     * 返回微秒
+     * @return float
+     */
+    private function getMicroTime()
+    {
+        list($usec, $sec) = explode(" ", microtime());
+
+        return ((float)$usec + (float)$sec);
     }
 
     /**

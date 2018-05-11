@@ -87,7 +87,7 @@ class DbCache
 
         $args = func_get_args();
         if ($isPrimaryQuery = $this->getIsPrimaryQuery($param)) {
-            $args = $this->getPrimaryKeyData($data);
+            $args = $this->getPrimaryKeyStr($data);
         }
 
         $singleKey = $this->getCacheVersion()->getSingleKey($this->getModule(), $args);
@@ -102,7 +102,7 @@ class DbCache
                     $primaryKeyData = $this->getPrimaryKeyData($result);
                     $this->getCache()->set($singleKey, json_encode($primaryKeyData), $this->getCacheExpiration());
                     ////同时存入主键形式的数据，以便下次递归时进行查询
-                    $primarySingleKey = $this->getCacheVersion()->getSingleKey($this->getModule(), $primaryKeyData);
+                    $primarySingleKey = $this->getCacheVersion()->getSingleKey($this->getModule(), $this->toString($primaryKeyData));
                     $this->getCache()->set($primarySingleKey, json_encode($result), $this->getCacheExpiration());
                 }
             }
@@ -200,8 +200,7 @@ class DbCache
             } else {
                 $result = $this->getDb()->all($param, $data);
                 foreach ($result as $row) {
-                    $singleKey = $this->getCacheVersion()->getSingleKey($this->getModule(),
-                        $this->getPrimaryKeyData($row));
+                    $singleKey = $this->getCacheVersion()->getSingleKey($this->getModule(), $this->getPrimaryKeyStr($row));
                     $this->getCache()->delete($singleKey);
                 }
             }
@@ -230,7 +229,7 @@ class DbCache
                 $result = $this->getDb()->all($param, $data);
                 foreach ($result as $row) {
                     $singleKey = $this->getCacheVersion()->getSingleKey($this->getModule(),
-                        $this->getPrimaryKeyData($row));
+                        $this->getPrimaryKeyStr($row));
                     $this->getCache()->delete($singleKey);
                 }
             }
@@ -305,6 +304,32 @@ class DbCache
         }
 
         return $primaryKeyData;
+    }
+
+    /**
+     * 获取主键数据的string形式
+     * @param $data
+     * @return string
+     */
+    private function getPrimaryKeyStr($data)
+    {
+        return $this->toString($this->getPrimaryKeyData($data));
+    }
+
+    /**
+     * 转换成string
+     * 要先遍历转成string，因为会存在1和'1'被json后的string不相同导致md5值不同
+     * @param $data
+     * @return string
+     */
+    private function toString($data)
+    {
+        $str = '';
+        foreach ($data as $key => $value) {
+            $str .= $key . ':' . $value . '_';
+        }
+
+        return $str;
     }
 
     /**

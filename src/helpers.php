@@ -38,11 +38,6 @@ if (!function_exists('array_has')) {
 if (!function_exists('array_key_lower')) {
     function array_key_lower(array $array)
     {
-        $lowerArr = [];
-        foreach ($array as $key => $val) {
-            $lowerArr[strtolower($key)] = $val;
-        }
-
-        return $lowerArr;
+        return array_change_key_case($array);
     }
 }
